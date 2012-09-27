@@ -1,39 +1,26 @@
-# -*- ruby -*-
-
-$:.unshift(File.expand_path('../lib', __FILE__))
-require 'gmail/version'
+#!/usr/bin/env rake
 
 begin
-  require 'ore/tasks'
-  Ore::Tasks.new
-rescue LoadError => e
-  STDERR.puts e.message
-  STDERR.puts "Run `gem install ore-tasks` to install 'ore/tasks'."
-end
-
-begin
-  require 'rspec/core/rake_task'
-  RSpec::Core::RakeTask.new(:spec)
+  require 'bundler/setup'
 rescue LoadError
-  task :spec do
-    abort 'Run `gem install rspec` to install RSpec'
-  end
+  puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
 end
 
-task :test => :spec
-task :default => :test
-
-begin 
-  require 'metric_fu'
-rescue LoadError => e
-  STDERR.puts e.message
-  STDERR.puts "Run `gem install metric_fu` to install Metric-Fu"
+begin
+  require 'rdoc/task'
+rescue LoadError
+  require 'rdoc/rdoc'
+  require 'rake/rdoctask'
+  RDoc::Task = Rake::RDocTask
 end
 
-require 'rake/rdoctask'
-Rake::RDocTask.new do |rdoc|
+RDoc::Task.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "Gmail for Ruby #{Gmail.version}"
+  rdoc.title = "Gmail for Ruby #{Gmail::VERSION}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+Bundler::GemHelper.install_tasks
+
+task :default => :spec
