@@ -3,11 +3,11 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'rubygems'
 require 'rspec'
-require 'mocha'
+require 'mocha_standalone'
 require 'yaml'
 require 'gmail'
 
-RSpec.configure do |config| 
+RSpec.configure do |config|
   config.mock_with :mocha
 end
 
