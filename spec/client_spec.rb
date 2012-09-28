@@ -96,7 +96,8 @@ describe "Gmail client (Plain)" do
     
     it "should deliver inline composed email" do
       mock_client do |client|
-        client.deliver do 
+        Mail::Message.any_instance.stubs(:deliver!).once.returns(true)
+        client.deliver do
           to TEST_ACCOUNT[0]
           subject "Hello world!"
           body "Yeah, hello there!"
