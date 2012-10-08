@@ -27,7 +27,7 @@ module Gmail
     # ==== Examples
     #
     #   Gmail.new(:plain, "foo@gmail.com", "password")
-    #   Gmail.new(:xoauth, "foo@gmail.com", 
+    #   Gmail.new(:xoauth, "foo@gmail.com",
     #     :consumer_key => "",
     #     :consumer_secret => "",
     #     :token => "",
@@ -43,21 +43,18 @@ module Gmail
     #     # ...
     #   end
     #
-
-    ['', '!'].each { |kind|
-      define_method("new#{kind}") do |*args, &block|                  # def new(*args, &block)
-        args.unshift(:plain) unless args.first.is_a?(Symbol)          #   args.unshift(:plain) unless args.first.is_a?(Symbol)  
-        client = Gmail::Client.new(*args)                             #   client = Gmail::Client.new(*args) 
-        client.send("connect#{kind}") and client.send("login#{kind}") #   client.connect and client.login
-                                                                      #  
-        if block_given?                                               #   if block_given?
-          yield client                                                #     yield client
-          client.logout                                               #     client.logout
-        end                                                           #   end
-                                                                      #   
-        client                                                        #   client
-      end                                                             # end
-    }
+    ['', '!'].each do |kind|
+      define_method("new#{kind}") do |*args, &block|
+        args.unshift(:plain) unless args.first.is_a?(Symbol)
+        client = Gmail::Client.new(*args)
+        client.send("connect#{kind}") and client.send("login#{kind}")
+        if block
+          block.call(client)
+          client.logout
+        end
+        client
+      end
+    end
 
     alias :connect :new
     alias :connect! :new!
